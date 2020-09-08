@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Shader Editor Online</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.12/ace.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.12/ext-language_tools.min.js"></script>
+    <style>
+        html, body {margin: 0; padding: 0; height: 100%; width: 100%;}
+        #vertex-editor {height: 100%; width: 50%; display: inline-block;}
+        #fragment-editor {height: 100%; width: 50%; display: inline-block;}
+        #vertex-iframe {height: 100%; width: 50%; display: inline-block;}
+        #fragment-iframe {height: 100%; width: 50%; display: inline-block;}
+        .container {height: 50%; width: auto; white-space: nowrap; overflow: hidden;}
+    </style>
+</head>
+<body onload="ready()">
+    <div class="container">
+        <div id="vertex-editor">
+        </div>
+        <iframe id="vertex-iframe" frameborder="0">
+        </iframe>
+    </div>
+    <div class="container">
+        <div id="fragment-editor">
+        </div>
+        <iframe id="fragment-iframe" frameborder="0">
+        </iframe>
+    </div>
+    <script>
+        function updateVertex() {
+            let idoc = document.getElementById('vertex-iframe').contentWindow.document;
+            idoc.open();
+            idoc.write(editor.getValue());
+            idoc.close();
+        }
+        function updateFragment() {
+            let idoc = document.getElementById('fragment-iframe').contentWindow.document;
+            idoc.open();
+            idoc.write(editor.getValue());
+            idoc.close();
+        }
+
+        function setupVertexEditor() {
+            window.editor = ace.edit("vertex-editor");
+            editor.setTheme("ace/theme/cobalt");
+            editor.getSession().setMode("ace/mode/glsl");
+            editor.setValue(`attribute vec3 aVertexPosition;
+uniform mat4 uMVMatrix;
+uniform mat4 uPMatrix;
+void main(void) {
+    gl_Position = uPMatrix * uMVMatrix * vec4(aVertexPosition, 1.0);
+}`,1); //1 = moves cursor to end
+
+            editor.getSession().on('change', function() {
+               updateVertex();
+            });
+
+            editor.setOptions({
+                fontSize: "16pt",
+                showLineNumbers: true,
+                showGutter: false,
+                vScrollBarAlwaysVisible:true,
+                enableBasicAutocompletion: true,
+                enableLiveAutocompletion: true
+            });
+
+            editor.setShowPrintMargin(false);
+            editor.renderer.setShowGutter(true);
+        }
+
+        function setupFragmentEditor() {
+            window.editor = ace.edit("fragment-editor");
+            editor.setTheme("ace/theme/cobalt");
+            editor.getSession().setMode("ace/mode/glsl");
+            editor.setValue(`void main(void) {
+       gl_FragColor = vec4(0.0,0.0,1.0,1.0);
+    }`,1); //1 = moves cursor to end
+
+            editor.getSession().on('change', function() {
+                updateFragment();
+            });
+
+            editor.setOptions({
+                fontSize: "16pt",
+                showLineNumbers: true,
+                showGutter: false,
+                vScrollBarAlwaysVisible:true,
+                enableBasicAutocompletion: true,
+                enableLiveAutocompletion: true
+            });
+
+            editor.setShowPrintMargin(false);
+            editor.renderer.setShowGutter(true);
+        }
+
+        function ready() {
+            setupVertexEditor();
+            setupFragmentEditor();
+            updateVertex();
+            updateFragment();
+        }
+    </script>
+</body>
+</html>
