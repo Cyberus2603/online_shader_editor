@@ -1,105 +1,165 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
+    <meta http-equiv="Content-Type" content="text/html" charset="UTF-8">
     <title>Shader Editor Online</title>
+    <!-- Editor imports -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.12/ace.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.12/ext-language_tools.min.js"></script>
-    <style>
-        html, body {margin: 0; padding: 0; height: 100%; width: 100%;}
-        #vertex-editor {height: 100%; width: 50%; display: inline-block;}
-        #fragment-editor {height: 100%; width: 50%; display: inline-block;}
-        #vertex-iframe {height: 100%; width: 50%; display: inline-block;}
-        #fragment-iframe {height: 100%; width: 50%; display: inline-block;}
-        .container {height: 50%; width: auto; white-space: nowrap; overflow: hidden;}
+    <script src="editors.js"></script>
+    <!-- WebGL imports -->
+    <script src="auxiliary_functions.js"></script>
+    <script src="webgl.js"></script>
+    <!-- Inline CSS -->
+    <style type="text/css">
+        html, body {margin: 0; padding: 10px; height: 98%; width: 98%;}
+        .site_container {height: 100%; width: 50%; float: left;}
+        .editor-container {height: 45%; padding-top: 5px; padding-bottom: 5px; width: auto; white-space: nowrap;}
+        #vertex-editor {height: 100%; width: 100%;}
+        #fragment-editor {height: 100%; width: 100%;}
+        #webgl_renderer {height: 50%; width: 100%;}
+        #options_menu {height: 50%; width: 49%; float: left;}
+        #error_log {height: 50%; width: 49%; float: left; border: 2px solid black;}
+        .content {
+            border: 1px solid;
+            text-align: left;
+            width: 300px;
+            float: left;
+        }
+        .content2{
+            border: 1px solid;
+            text-align: left;
+            width: 150px;
+            float: left;
+            border-left:white;
+
+        }
+        .clear{
+            clear: left;
+        }
+
+        .header {
+            border: 1px solid;
+            text-align: left;
+            width: 350px;
+            height:80px;
+            float: left;
+        }
+
+        .header2{
+
+            border: 1px solid;
+            text-align: left;
+            width: 290px;
+            height:80px;
+            float: left;
+        }
+
+        .menu {
+            border: 1px solid;
+            text-align: center;
+            width: 640px;
+            float: left;
+            clear: left;
+        }
     </style>
 </head>
 <body onload="ready()">
-    <div class="container">
-        <div id="vertex-editor">
+    <div class="site_container">
+        <div class="editor-container">
+            Vertex Shader:
+            <br>
+            <div id="vertex-editor"></div>
         </div>
-        <iframe id="vertex-iframe" frameborder="0">
-        </iframe>
-    </div>
-    <div class="container">
-        <div id="fragment-editor">
+        <br>
+        <button onmousedown="ReloadVertexShader(vertex_editor.getValue())">Update Vertex Shader</button>
+        <div class="editor-container">
+            Fragment Shader:
+            <br>
+            <div id="fragment-editor"></div>
         </div>
-        <iframe id="fragment-iframe" frameborder="0">
-        </iframe>
+        <br>
+        <button onmousedown="ReloadFragmentShader(fragment_editor.getValue())">Update Fragment Shader</button>
     </div>
-    <script>
-        function updateVertex() {
-            let idoc = document.getElementById('vertex-iframe').contentWindow.document;
-            idoc.open();
-            idoc.write(editor.getValue());
-            idoc.close();
-        }
-        function updateFragment() {
-            let idoc = document.getElementById('fragment-iframe').contentWindow.document;
-            idoc.open();
-            idoc.write(editor.getValue());
-            idoc.close();
-        }
+    <div class="site_container">
+        <canvas id="webgl_renderer"></canvas>
+        <div id="options_menu">
+            <div class="header">
+                <h1>Pozycja kamery i kąty</h1>
+            </div>
+            <div class="header2">
+                <p id="output">wskaźniki kamery</p>
+                <p id="output2">wskaźniki kamery</p>
 
-        function setupVertexEditor() {
-            window.editor = ace.edit("vertex-editor");
-            editor.setTheme("ace/theme/cobalt");
-            editor.getSession().setMode("ace/mode/glsl");
-            editor.setValue(`attribute vec3 aVertexPosition;
-uniform mat4 uMVMatrix;
-uniform mat4 uPMatrix;
-void main(void) {
-    gl_Position = uPMatrix * uMVMatrix * vec4(aVertexPosition, 1.0);
-}`,1); //1 = moves cursor to end
+                <div class="clear"></div>
+                <div class="menu">
+                </div>
+                <div class="content">
+                    Rotate Camera via X axis
+                    <button onmousedown="ChangeAngleX(1)">angleX+1</button>
+                    <button onmousedown="ChangeAngleX(10)">angleX+10</button>
+                    <button onmousedown="ChangeAngleX(50)">angleX+50</button>
+                    <br>
+                    <button onmousedown="ChangeAngleX(-1)">angleX-1</button>
+                    <button onmousedown="ChangeAngleX(-10)">angleX-10</button>
+                    <button onmousedown="ChangeAngleX(-50)">angleX-50</button>
+                    <hr>
+                    Rotate Camera via Y axis
+                    <button onmousedown="ChangeAngleY(1)">angleY+1</button>
+                    <button onmousedown="ChangeAngleY(10)">angleY+10</button>
+                    <button onmousedown="ChangeAngleY(50)">angleY+50</button>
+                    <br>
+                    <button onmousedown="ChangeAngleY(-1)">angleY-1</button>
+                    <button onmousedown="ChangeAngleY(-10)">angleY-10</button>
+                    <button onmousedown="ChangeAngleY(-50)">angleY-50</button>
+                    <hr>
+                    Rotate Camera via Z axis
+                    <button onmousedown="ChangeAngleZ(1)">angleZ+1</button>
+                    <button onmousedown="ChangeAngleZ(10)">angleZ+10</button>
+                    <button onmousedown="ChangeAngleZ(50)">angleZ+50</button>
+                    <br>
+                    <button onmousedown="ChangeAngleZ(-1)">angleZ-1</button>
+                    <button onmousedown="ChangeAngleZ(-10)">angleZ-10</button>
+                    <button onmousedown="ChangeAngleZ(-50)">angleZ-50</button>
+                    <hr>
 
-            editor.getSession().on('change', function() {
-               updateVertex();
-            });
+                    <input id="x" placeholder="x">
+                    <input id="y"placeholder="y">
+                    <input id="z"placeholder="z"><br>
+                    <button onmousedown="CreateBox()">szescian</button>
 
-            editor.setOptions({
-                fontSize: "16pt",
-                showLineNumbers: true,
-                showGutter: false,
-                vScrollBarAlwaysVisible:true,
-                enableBasicAutocompletion: true,
-                enableLiveAutocompletion: true
-            });
+                    <hr>
+                    <input id="x1"placeholder="promien">
+                    <input id="y1"placeholder="stepElevation">
+                    <input id="z1"placeholder="stepAngle"><br>
+                    <button onmousedown="CreateSphere()">kula</button>
 
-            editor.setShowPrintMargin(false);
-            editor.renderer.setShowGutter(true);
-        }
+                </div>
+                <div class="content2">
 
-        function setupFragmentEditor() {
-            window.editor = ace.edit("fragment-editor");
-            editor.setTheme("ace/theme/cobalt");
-            editor.getSession().setMode("ace/mode/glsl");
-            editor.setValue(`void main(void) {
-       gl_FragColor = vec4(0.0,0.0,1.0,1.0);
-    }`,1); //1 = moves cursor to end
+                    <button onmousedown="ChangePosX(1)">TX+1</button>
+                    <button onmousedown="ChangePosX(5)">TX+5</button><br>
+                    <button onmousedown="ChangePosX(-1)">TX-1</button>
+                    <button onmousedown="ChangePosX(-5)">TX-5</button><hr>
 
-            editor.getSession().on('change', function() {
-                updateFragment();
-            });
+                    <button onmousedown="ChangePosY(1)">TY+1</button>
+                    <button onmousedown="ChangePosY(5)">TY+5</button><br>
+                    <button onmousedown="ChangePosY(-1)">TY-1</button>
+                    <button onmousedown="ChangePosY(-5)">TY-5</button><hr>
 
-            editor.setOptions({
-                fontSize: "16pt",
-                showLineNumbers: true,
-                showGutter: false,
-                vScrollBarAlwaysVisible:true,
-                enableBasicAutocompletion: true,
-                enableLiveAutocompletion: true
-            });
-
-            editor.setShowPrintMargin(false);
-            editor.renderer.setShowGutter(true);
-        }
-
-        function ready() {
-            setupVertexEditor();
-            setupFragmentEditor();
-            updateVertex();
-            updateFragment();
-        }
-    </script>
+                    <button onmousedown="ChangePosZ(1)">TZ+1</button>
+                    <button onmousedown="ChangePosZ(5)">TZ+5</button><br>
+                    <button onmousedown="ChangePosZ(-1)">TZ-1</button>
+                    <button onmousedown="ChangePosZ(-5)">TZ-5</button>
+                </div>
+            </div>
+        </div>
+        <div>
+            Error Log
+            <div id="error_log">
+                TEST
+            </div>
+        </div>
+    </div>
 </body>
 </html>
