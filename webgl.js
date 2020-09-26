@@ -37,6 +37,7 @@ function InitGL() {
     gl = canvas.getContext("experimental-webgl"); //pobranie kontekstu OpenGL'u z obiektu canvas
     gl.viewportWidth = canvas.width; //przypisanie wybranej przez nas rozdzielczości do systemu OpenGL
     gl.viewportHeight = canvas.height;
+    console.log("WebGL Renderer dimensions: " + gl.viewportWidth + "x" + gl.viewportHeight);
     fragmentShader = gl.createShader(gl.FRAGMENT_SHADER); //Stworzenie obiektu shadera
     vertexShader = gl.createShader(gl.VERTEX_SHADER);
     startGL();
@@ -219,10 +220,9 @@ function Tick() {
 
     gl.drawArrays(gl.TRIANGLES, 0, vertexPositionBuffer.numItems*vertexPositionBuffer.itemSize); //Faktyczne wywołanie rendrowania
 
-    document.getElementById("output").innerHTML="Tx: "+tx+" Ty: " +ty+" Tz: "+tz;
-    document.getElementById("output2").innerHTML="angleX: "+angleX%360+" angleY: " +angleY%360+" angleZ: "+angleZ%360;
+    document.getElementById("camera-position").innerHTML="Camera Position: X: "+tx+" Y: " +ty+" Z: "+tz;
+    document.getElementById("camera-angle").innerHTML="Camera Angle: X: "+angleX%360+"° Y: " +angleY%360+"° Z: "+angleZ%360 + "°";
 
     setTimeout(Tick,10);
-
 }
 

@@ -3,6 +3,7 @@
 <head>
     <meta http-equiv="Content-Type" content="text/html" charset="UTF-8">
     <title>Shader Editor Online</title>
+    <link rel="stylesheet" href="style.css">
     <!-- Editor imports -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.12/ace.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.12/ext-language_tools.min.js"></script>
@@ -10,156 +11,140 @@
     <!-- WebGL imports -->
     <script src="auxiliary_functions.js"></script>
     <script src="webgl.js"></script>
-    <!-- Inline CSS -->
-    <style type="text/css">
-        html, body {margin: 0; padding: 10px; height: 98%; width: 98%;}
-        .site_container {height: 100%; width: 50%; float: left;}
-        .editor-container {height: 45%; padding-top: 5px; padding-bottom: 5px; width: auto; white-space: nowrap;}
-        #vertex-editor {height: 100%; width: 100%;}
-        #fragment-editor {height: 100%; width: 100%;}
-        #webgl_renderer {height: 50%; width: 100%;}
-        #options_menu {height: 50%; width: 49%; float: left;}
-        #error_log {height: 50%; width: 49%; float: left; border: 2px solid black;}
-        .content {
-            border: 1px solid;
-            text-align: left;
-            width: 300px;
-            float: left;
-        }
-        .content2{
-            border: 1px solid;
-            text-align: left;
-            width: 150px;
-            float: left;
-            border-left:white;
 
-        }
-        .clear{
-            clear: left;
-        }
-
-        .header {
-            border: 1px solid;
-            text-align: left;
-            width: 350px;
-            height:80px;
-            float: left;
-        }
-
-        .header2{
-
-            border: 1px solid;
-            text-align: left;
-            width: 290px;
-            height:80px;
-            float: left;
-        }
-
-        .menu {
-            border: 1px solid;
-            text-align: center;
-            width: 640px;
-            float: left;
-            clear: left;
-        }
-    </style>
 </head>
 <body onload="ready()">
     <div class="site_container">
-        <div class="editor-container">
-            Vertex Shader:
-            <br>
-            <div id="vertex-editor"></div>
+        <!-- Tab links -->
+        <div class="tab">
+            <button class="tab-links" onclick="openTab(event, 'Vertex')">Vertex</button>
+            <button class="tab-links" onclick="openTab(event, 'Fragment')">Fragment</button>
+            <button class="tab-links" onclick="openTab(event, 'Uniforms')">Uniforms</button>
+            <button class="tab-links" onclick="openTab(event, 'ExampleSettings')">Example Settings</button>
         </div>
-        <br>
-        <button onmousedown="ReloadVertexShader(vertex_editor.getValue())">Update Vertex Shader</button>
-        <div class="editor-container">
-            Fragment Shader:
+        <!-- Tab content -->
+        <div id="Vertex" class="tab-content">
+            <div class="editor-container">
+                Vertex Shader:
+                <br>
+                <div id="vertex-editor"></div>
+            </div>
             <br>
-            <div id="fragment-editor"></div>
+            <button onmousedown="ReloadVertexShader(vertex_editor.getValue())">Update Vertex Shader</button>
         </div>
-        <br>
-        <button onmousedown="ReloadFragmentShader(fragment_editor.getValue())">Update Fragment Shader</button>
+        <div id="Fragment" class="tab-content">
+            <div class="editor-container">
+                Fragment Shader:
+                <br>
+                <div id="fragment-editor"></div>
+            </div>
+            <br>
+            <button onmousedown="ReloadFragmentShader(fragment_editor.getValue())">Update Fragment Shader</button>
+        </div>
+        <div id="Uniforms" class="tab-content">
+            2DO
+        </div>
+        <div id="ExampleSettings" class="tab-content">
+            <div id="options_menu">
+                <hr>
+                <p id="camera-position">Camera Position Values</p>
+                <p id="camera-angle">Camera Angle Values</p>
+                <hr>
+                <div class="dimension-container">
+                    <div class="move_box">
+                        Move camera via X axis:
+                        <br>
+                        <button onmousedown="ChangePosX(1)">TX+1</button>
+                        <button onmousedown="ChangePosX(5)">TX+5</button><br>
+                        <button onmousedown="ChangePosX(-1)">TX-1</button>
+                        <button onmousedown="ChangePosX(-5)">TX-5</button>
+                    </div>
+                    <div class="rotate_box">
+                        Rotate camera via X axis:
+                        <button onmousedown="ChangeAngleX(1)">angleX+1</button>
+                        <button onmousedown="ChangeAngleX(-1)">angleX-1</button>
+                        <button onmousedown="ChangeAngleX(10)">angleX+10</button>
+                        <button onmousedown="ChangeAngleX(-10)">angleX-10</button>
+                        <button onmousedown="ChangeAngleX(50)">angleX+50</button>
+                        <button onmousedown="ChangeAngleX(-50)">angleX-50</button>
+                    </div>
+                </div>
+                <hr>
+                <div class="dimension-container">
+                    <div class="move_box">
+                        Move camera via Y axis:
+                        <br>
+                        <button onmousedown="ChangePosY(1)">TY+1</button>
+                        <button onmousedown="ChangePosY(5)">TY+5</button><br>
+                        <button onmousedown="ChangePosY(-1)">TY-1</button>
+                        <button onmousedown="ChangePosY(-5)">TY-5</button>
+                    </div>
+                    <div class="rotate_box">
+                        Rotate camera via Y axis:
+                        <button onmousedown="ChangeAngleY(1)">angleY+1</button>
+                        <button onmousedown="ChangeAngleY(-1)">angleY-1</button>
+                        <button onmousedown="ChangeAngleY(10)">angleY+10</button>
+                        <button onmousedown="ChangeAngleY(-10)">angleY-10</button>
+                        <button onmousedown="ChangeAngleY(50)">angleY+50</button>
+                        <button onmousedown="ChangeAngleY(-50)">angleY-50</button>
+                    </div>
+                </div>
+                <hr>
+                <div class="dimension-container">
+                    <div class="move_box">
+                        Move camera via Z axis:
+                        <br>
+                        <button onmousedown="ChangePosZ(1)">TZ+1</button>
+                        <button onmousedown="ChangePosZ(5)">TZ+5</button><br>
+                        <button onmousedown="ChangePosZ(-1)">TZ-1</button>
+                        <button onmousedown="ChangePosZ(-5)">TZ-5</button>
+                    </div>
+                    <div class="rotate_box">
+                        Rotate camera via Z axis:
+                        <button onmousedown="ChangeAngleZ(1)">angleZ+1</button>
+                        <button onmousedown="ChangeAngleZ(-1)">angleZ-1</button>
+                        <button onmousedown="ChangeAngleZ(10)">angleZ+10</button>
+                        <button onmousedown="ChangeAngleZ(-10)">angleZ-10</button>
+                        <button onmousedown="ChangeAngleZ(50)">angleZ+50</button>
+                        <button onmousedown="ChangeAngleZ(-50)">angleZ-50</button>
+                    </div>
+                </div>
+                <hr>
+                <div class="create_new">
+                    Replace example object:
+                    <hr>
+                    <input id="x" placeholder="x length"><br>
+                    <input id="y" placeholder="y length"><br>
+                    <input id="z" placeholder="z length"><br>
+                    <button onmousedown="CreateBox()">Create cube</button>
+                    <hr>
+                    <input id="x1" placeholder="radius"><br>
+                    <input id="y1" placeholder="step elevation"><br>
+                    <input id="z1" placeholder="step angle"><br>
+                    <button onmousedown="CreateSphere()">Create sphere</button>
+                </div>
+            </div>
+        </div>
+        <!-- Small script to handle tabs -->
+        <script>
+            function openTab(evt, tab) {
+                let i, tab_content, tab_links;
+                tab_content = document.getElementsByClassName("tab-content");
+                for (i = 0; i < tab_content.length; i++) {
+                    tab_content[i].style.display = "none";
+                }
+                tab_links = document.getElementsByClassName("tab-links");
+                for (i = 0; i < tab_links.length; i++) {
+                    tab_links[i].className = tab_links[i].className.replace(" active", "");
+                }
+                document.getElementById(tab).style.display = "block";
+                evt.currentTarget.className += " active";
+            }
+        </script>
     </div>
     <div class="site_container">
         <canvas id="webgl_renderer"></canvas>
-        <div id="options_menu">
-            <div class="header">
-                <h1>Pozycja kamery i kąty</h1>
-            </div>
-            <div class="header2">
-                <p id="output">wskaźniki kamery</p>
-                <p id="output2">wskaźniki kamery</p>
-
-                <div class="clear"></div>
-                <div class="menu">
-                </div>
-                <div class="content">
-                    Rotate Camera via X axis
-                    <button onmousedown="ChangeAngleX(1)">angleX+1</button>
-                    <button onmousedown="ChangeAngleX(10)">angleX+10</button>
-                    <button onmousedown="ChangeAngleX(50)">angleX+50</button>
-                    <br>
-                    <button onmousedown="ChangeAngleX(-1)">angleX-1</button>
-                    <button onmousedown="ChangeAngleX(-10)">angleX-10</button>
-                    <button onmousedown="ChangeAngleX(-50)">angleX-50</button>
-                    <hr>
-                    Rotate Camera via Y axis
-                    <button onmousedown="ChangeAngleY(1)">angleY+1</button>
-                    <button onmousedown="ChangeAngleY(10)">angleY+10</button>
-                    <button onmousedown="ChangeAngleY(50)">angleY+50</button>
-                    <br>
-                    <button onmousedown="ChangeAngleY(-1)">angleY-1</button>
-                    <button onmousedown="ChangeAngleY(-10)">angleY-10</button>
-                    <button onmousedown="ChangeAngleY(-50)">angleY-50</button>
-                    <hr>
-                    Rotate Camera via Z axis
-                    <button onmousedown="ChangeAngleZ(1)">angleZ+1</button>
-                    <button onmousedown="ChangeAngleZ(10)">angleZ+10</button>
-                    <button onmousedown="ChangeAngleZ(50)">angleZ+50</button>
-                    <br>
-                    <button onmousedown="ChangeAngleZ(-1)">angleZ-1</button>
-                    <button onmousedown="ChangeAngleZ(-10)">angleZ-10</button>
-                    <button onmousedown="ChangeAngleZ(-50)">angleZ-50</button>
-                    <hr>
-
-                    <input id="x" placeholder="x">
-                    <input id="y"placeholder="y">
-                    <input id="z"placeholder="z"><br>
-                    <button onmousedown="CreateBox()">szescian</button>
-
-                    <hr>
-                    <input id="x1"placeholder="promien">
-                    <input id="y1"placeholder="stepElevation">
-                    <input id="z1"placeholder="stepAngle"><br>
-                    <button onmousedown="CreateSphere()">kula</button>
-
-                </div>
-                <div class="content2">
-
-                    <button onmousedown="ChangePosX(1)">TX+1</button>
-                    <button onmousedown="ChangePosX(5)">TX+5</button><br>
-                    <button onmousedown="ChangePosX(-1)">TX-1</button>
-                    <button onmousedown="ChangePosX(-5)">TX-5</button><hr>
-
-                    <button onmousedown="ChangePosY(1)">TY+1</button>
-                    <button onmousedown="ChangePosY(5)">TY+5</button><br>
-                    <button onmousedown="ChangePosY(-1)">TY-1</button>
-                    <button onmousedown="ChangePosY(-5)">TY-5</button><hr>
-
-                    <button onmousedown="ChangePosZ(1)">TZ+1</button>
-                    <button onmousedown="ChangePosZ(5)">TZ+5</button><br>
-                    <button onmousedown="ChangePosZ(-1)">TZ-1</button>
-                    <button onmousedown="ChangePosZ(-5)">TZ-5</button>
-                </div>
-            </div>
-        </div>
-        <div>
-            Error Log
-            <div id="error_log">
-                TEST
-            </div>
-        </div>
+        <div id="error_log">TEST</div>
     </div>
 </body>
 </html>

@@ -1,0 +1,21 @@
+html, body {margin: 0; padding: 10px; height: 98%; width: 98%;}
+.site_container {height: 96%; width: 50%; float: left;}
+.editor-container {height: 90%; padding-top: 5px; padding-bottom: 5px; width: auto; white-space: nowrap;}
+/* Box layout */
+#vertex-editor {height: 100%; width: 100%;}
+#fragment-editor {height: 100%; width: 100%;}
+#webgl_renderer {height: 50%; width: 100%;}
+#options_menu {height: 50%; width: 49%; float: left;}
+#error_log {height: 50%; width: 100%; float: left; border: 2px solid black;}
+/* Example settings styling */
+.dimension-container {height: 20%; width: 100%}
+.rotate_box {text-align: left; width: 50%; height: 100%; float: right; }
+.move_box {text-align: left; width: 50%; height: 100%; float: left; }
+.create_new {text-align: left; width: 100%; height: 25%}
+/* Tab bar styling */
+.tab {overflow: hidden; border: 1px solid #ccc; background-color: #f1f1f1; margin-right: 2%; }
+.tab button {background-color: inherit; float: left; border: none; outline: none; cursor: pointer;
+    padding: 14px 16px; transition: 0.3s; font-size: 17px;}
+.tab button:hover {background-color: #ddd;}
+.tab button.active {background-color: #ccc;}
+.tab-content {display: none; width: 98%; height: 100%;}
