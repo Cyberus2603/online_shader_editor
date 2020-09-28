@@ -1,16 +1,3 @@
-// function updateVertex() {
-//     let idoc = document.getElementById('vertex-iframe').contentWindow.document;
-//     idoc.open();
-//     idoc.write(vertex_editor.getValue());
-//     idoc.close();
-// }
-// function updateFragment() {
-//     let idoc = document.getElementById('fragment-iframe').contentWindow.document;
-//     idoc.open();
-//     idoc.write(fragment_editor.getValue());
-//     idoc.close();
-// }
-
 function setupVertexEditor() {
     window.vertex_editor = ace.edit("vertex-editor");
     vertex_editor.setTheme("ace/theme/cobalt");
